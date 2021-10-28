@@ -1,0 +1,78 @@
+Comandos ejecutados:
+desde la linea de comando de postgres ejecuto con el usuario de postgres:
+
+create database cyf_hotels owner postgres;
+
+\q
+
+psql -U postgres cyf_hotels;
+
+CREATE TABLE customers (
+  id        SERIAL PRIMARY KEY,
+  name      VARCHAR(30) NOT NULL,
+  email     VARCHAR(120) NOT NULL,
+  address   VARCHAR(120),
+  city      VARCHAR(30),
+  postcode  VARCHAR(12),
+  country   VARCHAR(20)
+);
+
+CREATE TABLE hotels (
+id SERIAL PRIMARY KEY,
+name VARCHAR(30) NOT NULL,
+rooms VARCHAR(100),
+postcode VARCHAR(12)
+);
+
+CREATE TABLE bookings (
+  id               SERIAL PRIMARY KEY,
+  customer_id      INT REFERENCES customers(id),
+  hotel_id         INT REFERENCES hotels(id),
+  checkin_date     DATE NOT NULL,
+  nights           INT NOT NULL
+);
+
+INSERT INTO customers (name, email, address, city, postcode, country) VALUES ('John Smith','j.smith@johnsmith.org','11 New Road','Liverpool','L10 2AB','UK');
+INSERT INTO hotels (name, rooms, postcode) VALUES ('Triple Point Hotel', 10, 'CM194JS');
+INSERT INTO bookings (customer_id, hotel_id, checkin_date, nights) VALUES (1, 1, '2019-10-01', 2);
+
+INSERT INTO customers (name, email, address, city, postcode, country) VALUES ('Jesús Cepeda','jcepedaf@gmail.com','barcelona 136','barcelona','08088','Es');
+
+INSERT INTO hotels (name, rooms, postcode) VALUES ('Triple Point Hotel', 10, 'CM194JS');
+INSERT INTO hotels (name, rooms, postcode) VALUES ('Royal Cosmos Hotel', 5, 'TR209AX');
+INSERT INTO hotels (name, rooms, postcode) VALUES ('Pacific Petal Motel', 15, 'BN180TG');
+
+select * from hotels;
+select * from customers;
+select * from bookings;
+
+SELECT name,address FROM customers;
+
+cambio tipo de data a columna rooms de la tabla hotels
+ALTER TABLE hotels ALTER COLUMN rooms TYPE integer USING (trim(rooms)::integer);
+
+SELECT * FROM hotels WHERE rooms > 7;
+SELECT name,address FROM customers WHERE id = 1;
+SELECT * FROM bookings WHERE checkin_date > '2019/10/01';
+SELECT * FROM bookings WHERE checkin_date > '2019/10/01' AND nights >= 2;
+SELECT * FROM hotels WHERE postcode = 'CM194JS' OR postcode = 'TR209AX';
+
+Cargamos el archivo .sql el cual borra la data de las tablas y carga una nueva data - exercise 5
+\q
+psql -d cyf_hotels -f cyf_hotels_exercise5.sql
+
+select * from customers where name = 'Laurence Lebihan';
+select * from customers where country = 'UK';
+select address,city,postcode from customers where name = 'Melinda Marsh';
+select * from hotels where postcode = 'DGQ127';
+select * from hotels where rooms > 11;
+select * from hotels where rooms > 6 and rooms < 15;
+select * from bookings where id = 1;
+select * from hotels where rooms = 10  or rooms = 20;
+select * from bookings where nights > 4;
+
+
+
+
+
+
